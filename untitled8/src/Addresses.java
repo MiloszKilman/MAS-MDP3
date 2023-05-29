@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Nullable;
-
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -8,7 +6,6 @@ public class Addresses implements Serializable {
     private String Street;
     private int numberStreet;
     //opcjonalny
-    @Nullable
     private int apartmentNumber;
     private String postCode;
 
@@ -20,14 +17,14 @@ public class Addresses implements Serializable {
         this.numberStreet = numberStreet;
         this.postCode = postCode;
     }
-
-    public Addresses(String city, String street, int numberStreet, @Nullable int apartmentNumber, String postCode) {
-        this.city = city;
-        Street = street;
-        this.numberStreet = numberStreet;
-        this.apartmentNumber = apartmentNumber;
-        this.postCode = postCode;
-    }
+//
+//    public Addresses(String city, String street, int numberStreet, @Nullable int apartmentNumber, String postCode) {
+//        this.city = city;
+//        Street = street;
+//        this.numberStreet = numberStreet;
+//        this.apartmentNumber = apartmentNumber;
+//        this.postCode = postCode;
+//    }
 
     public int getApartmentNumber() {
         return apartmentNumber;

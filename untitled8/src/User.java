@@ -4,11 +4,19 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+//overlapping
+enum UserType {Standard, Contributor, LocalAdmin, GlobalAdmin};
 
-public class User implements Serializable {
+//płeć
+enum UserGender{Kobieta, Mężczyzna, inny};
 
+public abstract class User implements Serializable {
+
+    //prosty
     private String name;
+    //prosty
     private String lastName;
     private LocalDate hireDate;
     private int phoneNumber;
@@ -18,6 +26,12 @@ public class User implements Serializable {
     private static int userCounter;
     //powtatrzalny
     private List<String> departments = new ArrayList<>();
+
+    //overlapping
+    private Set<UserType>  userType = Set.of(UserType.Standard);
+
+    //drugiAspekt
+    public UserGender userGender = UserGender.inny;
 
     public User(String name, String lastName, LocalDate hireDate, int phoneNumber, Addresses addresses, String [] department) {
         this.name = name;
@@ -34,6 +48,10 @@ public class User implements Serializable {
         extent.add(this);
     }
 
+    public static int getUserCounter() {
+        return userCounter;
+    }
+
     public LocalDate getHireDate() {
         return hireDate;
     }
@@ -47,11 +65,6 @@ public class User implements Serializable {
         return Period.between (getHireDate(), LocalDate.now()).getYears();
     }
 
-
-    //metoda klasowa
-    public static int getUserCounter() {
-        return userCounter;
-    }
 
     public String getName() {
         return name;
@@ -118,6 +131,38 @@ public class User implements Serializable {
             System.err.println("Error while loading extent from file: " + e.getMessage());
         }
     }
+    //overlapping
+    public Set<UserType> getUserType() {
+        return userType;
+    }
+
+    public void setUserType(Set<UserType> userType) {
+        this.userType = userType;
+    }
+
+    //drugi aspekt
+
+    public UserGender getUserGender() {
+        return userGender;
+    }
+
+    public void setUserGender(UserGender userGender) {
+        this.userGender = userGender;
+    }
+    public void idzNaUrlopMacierzyński(){
+        if(userGender.equals(userGender.Kobieta)) {
+            System.out.println("Idź na urlop!");
+        }
+        else
+            System.out.println("Niestety nie jesteś kobietą");
+    }
+    public void wprowadźWojnę(){
+        if(userGender.equals(userGender.Mężczyzna)) {
+            System.out.println("Idź na wojne!");
+        }
+        else
+            System.out.println("Zabieraj dzieci i wyjeżdzaj!");
+    }
 
     @Override
     public String toString() {
@@ -130,4 +175,5 @@ public class User implements Serializable {
                 ", departments=" + departments +
                 '}';
     }
+
 }
