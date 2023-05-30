@@ -17,6 +17,7 @@ public class Addresses implements Serializable {
         this.numberStreet = numberStreet;
         this.postCode = postCode;
     }
+
 //
 //    public Addresses(String city, String street, int numberStreet, @Nullable int apartmentNumber, String postCode) {
 //        this.city = city;

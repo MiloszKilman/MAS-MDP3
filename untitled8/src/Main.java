@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -6,6 +7,8 @@ import java.util.Optional;
 
 public class Main {
     public static void main(String[] args) {
+        //GUI
+        SwingUtilities.invokeLater(() -> new UserGUI());
         //adresy
         Addresses adres = new Addresses("Warszawa", "Koszykowa", 86, "00-014");
         Addresses adres2 = new Addresses("Miłomłyn", "Kwiatowa", 1,  "14-140");
@@ -77,10 +80,9 @@ public class Main {
         System.out.println("Adres grupy: "+readPublic.getName());
         System.out.println(((MailGroup) marketing).getEmailAddress());
         System.out.println();
-        //lokalizajcja ekstecji
-        String fname = System.getProperty("user.home") + "/ekstencja.dat";
-        User.saveExtent(fname);
-        User.loadExtent(fname);
-        User.showExtent();
+
+
+
+
     }
 }

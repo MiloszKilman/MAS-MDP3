@@ -12,7 +12,7 @@ enum UserType {Standard, Contributor, LocalAdmin, GlobalAdmin};
 //płeć
 enum UserGender{Kobieta, Mężczyzna, inny};
 
-public abstract class User implements Serializable {
+public  class User implements Serializable {
 
     //prosty
     private String name;
@@ -94,7 +94,7 @@ public abstract class User implements Serializable {
 
 
     //Esktecja klasy
-    private static List<User> extent = new ArrayList<>();
+    protected static List<User> extent = new ArrayList<>();
 
     private static void addUser(User user) {
         extent.add(user);
