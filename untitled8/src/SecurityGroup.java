@@ -6,4 +6,8 @@ public class SecurityGroup extends Group {
         super(group.Name);
         this.FilePermission=FilePermission;
     }
+
+    public boolean isFilePermission() {
+        return FilePermission;
+    }
 }

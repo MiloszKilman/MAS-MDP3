@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-//overlapping
+//overlapping przez spłaszczenie struktury
 enum UserType {Standard, Contributor, LocalAdmin, GlobalAdmin};
 
-//płeć
+//Wieloaspektowe
 enum UserGender{Kobieta, Mężczyzna, inny};
 
 public  class User implements Serializable {
@@ -55,7 +55,7 @@ public  class User implements Serializable {
     public LocalDate getHireDate() {
         return hireDate;
     }
-    //przesłonięta metod
+    //przesłonięta metoda
     public String getHireDate(DateTimeFormatter formatter){
         String parsed = hireDate.format(formatter);
         return parsed;
@@ -114,13 +114,29 @@ public  class User implements Serializable {
     //trwałość ekstecji
     public static void saveExtent(String fileName) {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
+            // Utwórz strumień FileOutputStream w trybie dopisywania
+            FileOutputStream fileOutputStream = new FileOutputStream(fileName, true);
+
+            // Utwórz strumień ObjectOutputStream na podstawie strumienia FileOutputStream
+            ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream) {
+                @Override
+                protected void writeStreamHeader() throws IOException {
+                    // Wyłącz standardową nagłówkową informację o strumieniu dla trybu dopisywania
+                    reset();
+                }
+            };
+
+            // Zapisz obiekt do strumienia
             oos.writeObject(extent);
+
+            // Zamknij strumienie
             oos.close();
+            fileOutputStream.close();
         } catch (IOException e) {
             System.err.println("Error while saving extent to file: " + e.getMessage());
         }
     }
+
     @SuppressWarnings("unchecked")
     public static void loadExtent(String fileName) {
         try {
@@ -149,14 +165,14 @@ public  class User implements Serializable {
     public void setUserGender(UserGender userGender) {
         this.userGender = userGender;
     }
-    public void idzNaUrlopMacierzyński(){
+    public void goMaternityLeave(){
         if(userGender.equals(userGender.Kobieta)) {
             System.out.println("Idź na urlop!");
         }
         else
             System.out.println("Niestety nie jesteś kobietą");
     }
-    public void wprowadźWojnę(){
+    public void declareWar(){
         if(userGender.equals(userGender.Mężczyzna)) {
             System.out.println("Idź na wojne!");
         }

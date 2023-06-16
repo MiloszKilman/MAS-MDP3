@@ -15,8 +15,13 @@ public class UserGUI extends JFrame implements ActionListener {
     private JTextField apartmentNumberField;
     private JTextField postCodeField;
     private JComboBox departmentField;
+    private JTextField domainField;
+    private JLabel domainLabel;
+
     private JRadioButton externalUserRadioButton;
     private JRadioButton internalUserRadioButton;
+    private JRadioButton externalGuestUserRadioButton;
+
     private JTextField managerField;
     private JTextField payrollDayField;
     private JButton createButton;
@@ -122,8 +127,16 @@ public class UserGUI extends JFrame implements ActionListener {
         panel.add(internalUserRadioButton, constraints);
         userTypeGroup.add(internalUserRadioButton);
 
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 2;
+        externalGuestUserRadioButton = new JRadioButton("External Guest User");
+        externalGuestUserRadioButton.addActionListener(this);
+        panel.add(externalGuestUserRadioButton, constraints);
+        userTypeGroup.add(externalGuestUserRadioButton);
+
+
+        constraints.gridx = 0;
+        constraints.gridy = 3;
         panel.add(new JLabel("Hire Date (YYYY-MM-DD):"), constraints);
 
         constraints.gridx = 1;
@@ -134,7 +147,7 @@ public class UserGUI extends JFrame implements ActionListener {
         panel.add(hireDateField, constraints);
 
         constraints.gridx = 0;
-        constraints.gridy = 3;
+        constraints.gridy = 4;
         panel.add(new JLabel("Manager:"), constraints);
 
         constraints.gridx = 1;
@@ -145,7 +158,7 @@ public class UserGUI extends JFrame implements ActionListener {
         panel.add(managerField, constraints);
 
         constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridy = 5;
         panel.add(new JLabel("Payroll Day (YYYY-MM-DD):"), constraints);
 
         constraints.gridx = 1;
@@ -156,7 +169,7 @@ public class UserGUI extends JFrame implements ActionListener {
         panel.add(payrollDayField, constraints);
 
         constraints.gridx = 0;
-        constraints.gridy = 5;
+        constraints.gridy = 6;
         panel.add(new JLabel("Department:"), constraints);
 
         constraints.gridx = 1;
@@ -166,6 +179,21 @@ public class UserGUI extends JFrame implements ActionListener {
         departmentField.setBackground(disabledFieldColor);
         departmentField.setPreferredSize(new Dimension(200, 25));
         panel.add(departmentField, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 7;
+
+        panel.add(new JLabel("Domain Name:"), constraints);
+
+        constraints.gridx = 1;
+        domainField = new JTextField();
+        domainField.setPreferredSize(new Dimension(200, 25));
+        panel.add(domainField, constraints);
+        constraints.gridx = 1;
+        domainField = new JTextField();
+        domainField.setEnabled(false);
+        domainField.setBackground(disabledFieldColor);
+        domainField.setPreferredSize(new Dimension(200, 25));
+        panel.add(domainField, constraints);
 
         return panel;
     }
@@ -186,6 +214,7 @@ public class UserGUI extends JFrame implements ActionListener {
         constraints.gridx = 1;
         cityField = new JTextField();
         cityField.setPreferredSize(new Dimension(200, 25));
+        cityField.setText("Warszawa");
         panel.add(cityField, constraints);
 
         constraints.gridx = 0;
@@ -195,6 +224,7 @@ public class UserGUI extends JFrame implements ActionListener {
         constraints.gridx = 1;
         streetField = new JTextField();
         streetField.setPreferredSize(new Dimension(200, 25));
+        streetField.setText("Marszałkowska");
         panel.add(streetField, constraints);
 
         constraints.gridx = 0;
@@ -204,6 +234,7 @@ public class UserGUI extends JFrame implements ActionListener {
         constraints.gridx = 1;
         numberStreetField = new JTextField();
         numberStreetField.setPreferredSize(new Dimension(200, 25));
+        numberStreetField.setText("1");
         panel.add(numberStreetField, constraints);
 
         constraints.gridx = 0;
@@ -222,6 +253,7 @@ public class UserGUI extends JFrame implements ActionListener {
         constraints.gridx = 1;
         postCodeField = new JTextField();
         postCodeField.setPreferredSize(new Dimension(200, 25));
+        postCodeField.setText("11-100");
         panel.add(postCodeField, constraints);
 
         return panel;
@@ -253,12 +285,19 @@ public class UserGUI extends JFrame implements ActionListener {
             if (externalUserRadioButton.isSelected()) {
                 LocalDate payrollDay = LocalDate.parse(payrollDayField.getText());
                 user = new ExternalUser(name, lastName, hireDate, phoneNumber, addresses, department, payrollDay);
-            } else {
+            }
+            else if (externalUserRadioButton.isSelected()) {
+                LocalDate payrollDay = LocalDate.parse(payrollDayField.getText());
+                String domainName = domainField.getText();
+                user = new ExternalGuestUser(name, lastName, hireDate, phoneNumber, addresses, department, payrollDay, domainName);
+            }
+            else {
                 String managerName = managerField.getText();
                 // Create a dummy manager user object for now
                 User manager = new User(managerName, "", LocalDate.now(), 0, null, new String[]{});
                 user = new InternalUser(name, lastName, hireDate, phoneNumber, addresses, department, manager);
             }
+
 
             // Do something with the created user object
             System.out.println("New user created: " + user.getName());
@@ -288,7 +327,20 @@ public class UserGUI extends JFrame implements ActionListener {
             hireDateField.setBackground(Color.WHITE);
             departmentField.setEnabled(true);  // Dodaj tę linię
             departmentField.setBackground(Color.WHITE);  // Dodaj tę linię
+        }else if (e.getSource() == externalGuestUserRadioButton) {
+            // Enable External Guest User fields, disable External User and Internal User fields
+            hireDateField.setEnabled(true);
+            hireDateField.setBackground(Color.WHITE);
+            managerField.setEnabled(false);
+            managerField.setBackground(disabledFieldColor);
+            payrollDayField.setEnabled(false);
+            payrollDayField.setBackground(disabledFieldColor);
+            departmentField.setEnabled(true);  // Dodaj tę linię
+            departmentField.setBackground(Color.WHITE);  // Dodaj tę linięX
+            domainField.setEnabled(true);
+            domainField.setBackground(Color.WHITE);
         }
+
 
 
     }
@@ -310,13 +362,15 @@ public class UserGUI extends JFrame implements ActionListener {
             summary.append("User Type: Internal User\n");
             summary.append("Manager: ").append(internalUser.getManager().getName()).append("\n");
         }
+        else if (user instanceof ExternalGuestUser) {
+            ExternalGuestUser externalGuestUser = (ExternalGuestUser) user;
+            summary.append("User Type: External Guest User\n");
+            summary.append("Domain Name: ").append(externalGuestUser.getDomainName()).append("\n");
+        }
+
 
         JOptionPane.showMessageDialog(this, summary.toString(), "User Creation Summary", JOptionPane.INFORMATION_MESSAGE);
-        //lokalizajcja ekstecji
-        String fname = System.getProperty("user.home") + "/ekstencja.dat";
-        User.saveExtent(fname);
-        User.loadExtent(fname);
-        User.showExtent();
+
     }
 
 }
