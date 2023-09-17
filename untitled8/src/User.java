@@ -2,9 +2,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 //overlapping przez spłaszczenie struktury
 enum UserType {Standard, Contributor, LocalAdmin, GlobalAdmin};
@@ -12,7 +10,7 @@ enum UserType {Standard, Contributor, LocalAdmin, GlobalAdmin};
 //Wieloaspektowe
 enum UserGender{Kobieta, Mężczyzna, inny};
 
-public  class User implements Serializable {
+public  class User  {
 
     //prosty
     private String name;
@@ -33,6 +31,13 @@ public  class User implements Serializable {
     //drugiAspekt
     public UserGender userGender = UserGender.inny;
 
+
+    //asocjacja zwykła
+    public List<Group> groups;
+
+    private static DatabaseManager databaseManager = new DatabaseManager();
+
+
     public User(String name, String lastName, LocalDate hireDate, int phoneNumber, Addresses addresses, String [] department) {
         this.name = name;
         this.lastName = lastName;
@@ -45,7 +50,14 @@ public  class User implements Serializable {
             }
         }
         userCounter++;
-        extent.add(this);
+        databaseManager.saveUser(this);
+    }
+
+    public User(String name, String lastName, LocalDate hireDate, int phoneNumber) {
+        this.name = name;
+        this.lastName = lastName;
+        this.hireDate = hireDate;
+        this.phoneNumber = phoneNumber;
     }
 
     public static int getUserCounter() {
@@ -81,72 +93,26 @@ public  class User implements Serializable {
             System.out.println(ch);
         }
     }
-    //metoda klasowa
-    public static User getLongestWorkingUser() {
-        User longestWorkingUser = extent.get(0);
-        for (User user : extent) {
-            if (user.getTimeOfEmployment() > longestWorkingUser.getTimeOfEmployment()) {
-                longestWorkingUser = user;
-            }
-        }
-        return longestWorkingUser;
+    public int getPhoneNumber() {
+        return phoneNumber;
     }
 
-
-    //Esktecja klasy
-    protected static List<User> extent = new ArrayList<>();
-
-    private static void addUser(User user) {
-        extent.add(user);
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    private static void removeUser(User user) {
-        extent.remove(user);
+    public List<String> getDepartments() {
+        return departments;
     }
 
-    public static void showExtent() {
-        System.out.println("Extent of the class: " + User.class.getName());
-        for (User user : extent) {
-            System.out.println(user);
-        }
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    //trwałość ekstecji
-    public static void saveExtent(String fileName) {
-        try {
-            // Utwórz strumień FileOutputStream w trybie dopisywania
-            FileOutputStream fileOutputStream = new FileOutputStream(fileName, true);
-
-            // Utwórz strumień ObjectOutputStream na podstawie strumienia FileOutputStream
-            ObjectOutputStream oos = new ObjectOutputStream(fileOutputStream) {
-                @Override
-                protected void writeStreamHeader() throws IOException {
-                    // Wyłącz standardową nagłówkową informację o strumieniu dla trybu dopisywania
-                    reset();
-                }
-            };
-
-            // Zapisz obiekt do strumienia
-            oos.writeObject(extent);
-
-            // Zamknij strumienie
-            oos.close();
-            fileOutputStream.close();
-        } catch (IOException e) {
-            System.err.println("Error while saving extent to file: " + e.getMessage());
-        }
+    public void setGroups(Group group) {
+        this.groups.add(group);
     }
 
-    @SuppressWarnings("unchecked")
-    public static void loadExtent(String fileName) {
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName));
-            extent = (List<User>) ois.readObject();
-            ois.close();
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error while loading extent from file: " + e.getMessage());
-        }
-    }
     //overlapping
     public Set<UserType> getUserType() {
         return userType;
@@ -180,6 +146,21 @@ public  class User implements Serializable {
             System.out.println("Zabieraj dzieci i wyjeżdzaj!");
     }
 
+    //kompozycja
+    private List<Mailbox> mailboxes = new ArrayList<>() ;
+    public void addMailbox(String email){
+        Mailbox mailbox = new Mailbox(email);
+        mailboxes.add(mailbox);
+    }
+
+    public void removeMalbox(Mailbox mailbox){
+        mailboxes.remove(mailbox);
+    }
+
+    public List<Mailbox> getMailboxes() {
+        return mailboxes;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -192,4 +173,56 @@ public  class User implements Serializable {
                 '}';
     }
 
+    //klasa wewnętrzna z konstruktorem prywatnym - kompozycja
+    class Mailbox {
+        private String numer;
+        private String email;
+        private  String name;
+
+        private String DisplayName;
+        private Mailbox(String email) {
+            this.email = email;
+            this.numer = generateRandomNumer();
+        }
+
+        private String generateRandomNumer() {
+            Random random = new Random();
+            char litera = (char) (random.nextInt(26) + 'A'); // Losowa wielka litera (A-Z)
+            int cyfra = random.nextInt(10); // Losowa cyfra (0-9)
+            return litera + String.valueOf(cyfra);
+        }
+
+        private String getNumer() {
+            return numer;
+        }
+
+        private void setNumer(String numer) {
+            this.numer = numer;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        private void setEmail(String email) {
+            this.email = email;
+        }
+
+        private String getName() {
+            return name;
+        }
+
+        private void setName(String name) {
+            this.name = name;
+        }
+
+        private String getDisplayName() {
+            return DisplayName;
+        }
+
+        private void setDisplayName(String displayName) {
+            DisplayName = displayName;
+        }
+    }
 }
+

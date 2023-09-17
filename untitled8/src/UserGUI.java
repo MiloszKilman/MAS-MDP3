@@ -28,6 +28,8 @@ public class UserGUI extends JFrame implements ActionListener {
 
     private Color disabledFieldColor = new Color(200, 200, 200); // Domyślny kolor dla wyłączonych pól
 
+    private String selectedDepartment;
+
     public UserGUI() {
         initializeGUI();
     }
@@ -181,6 +183,9 @@ public class UserGUI extends JFrame implements ActionListener {
         panel.add(departmentField, constraints);
         constraints.gridx = 0;
         constraints.gridy = 7;
+
+        // Pobieranie wybranej wartości z JComboBox
+         departmentField.getSelectedItem();
 
         panel.add(new JLabel("Domain Name:"), constraints);
 
@@ -371,6 +376,10 @@ public class UserGUI extends JFrame implements ActionListener {
 
         JOptionPane.showMessageDialog(this, summary.toString(), "User Creation Summary", JOptionPane.INFORMATION_MESSAGE);
 
+
     }
 
+    public String getSelectedDepartment() {
+        return (String) selectedDepartment;
+    }
 }

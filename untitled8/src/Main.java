@@ -1,12 +1,13 @@
 import javax.swing.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 public class Main {
     public static void main(String[] args) {
         //GUI
-       SwingUtilities.invokeLater(() -> new UserGUI());
+        SwingUtilities.invokeLater(() -> new UserTableGUI());
         //adresy
         Addresses adres = new Addresses("Warszawa", "Koszykowa", 86, "00-014");
         Addresses adres2 = new Addresses("Miłomłyn", "Kwiatowa", 1,  "14-140");
@@ -19,7 +20,7 @@ public class Main {
         LocalDate date4 = LocalDate.parse("2024-03-23");
 
 
-        //Klasa abstrakcyjna - użytkownicy
+        //Polimorfizm
         User user1 = new ExternalUser("Jan", "Kowalski",
                 date, 50506708, adres , new String[] {"IT"}, date3);
         User user2 = new InternalUser("Anna", "Nowak",
@@ -46,9 +47,7 @@ public class Main {
         user1.showDepartmets();
         user2.showDepartmets();
         System.out.println();
-        //metoda klasowa
-        System.out.println("Najdłużej pracujący to: " + User.getLongestWorkingUser());
-        System.out.println();
+
 
         //dziedziczenie
         System.out.println("Przełożony: "+user4.getName()+ " "+ user4.getLastName()+":");
@@ -56,15 +55,6 @@ public class Main {
         System.out.println("Data płatnościc dla " + user3.getName()+":");
         System.out.println(((ExternalUser) user3).getPayrollDayInMonth());
 
-        //wielodziedziczenie
-        System.out.println();
-        System.out.println("Użytkownik "+user5.getName()+ " "+ user5.getLastName()+" jest z domeny:");
-        System.out.println(((ExternalGuestUser) user5).getDomainName());
-        System.out.println();
-        //wieloaspektowość
-        user5.setUserGender(UserGender.Mężczyzna);
-        user5.goMaternityLeave();
-        System.out.println();
 
         //dynamiczne
         Group readInPublic = new Group("readInPublic");
@@ -79,12 +69,12 @@ public class Main {
         System.out.println(((MailGroup) marketing).getEmailAddress());
         System.out.println();
 
-        //lokalizajcja ekstecji
-        String fname = System.getProperty("user.home") + "/ekstencja.dat";
-        User.saveExtent(fname);
-        User.loadExtent(fname);
-        User.showExtent();
-
-
+        user1.addMailbox("user1@test.pl");
+        user2.addMailbox("user2@test.pl");
+        System.out.println("Adres mailowy " + user1.getName()+":");
+        List<User.Mailbox> userMailboxes = user1.getMailboxes();
+        for (User.Mailbox mailbox : userMailboxes) {
+            System.out.println(" - " + mailbox.getEmail());
+        }
     }
 }

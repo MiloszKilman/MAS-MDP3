@@ -14,7 +14,7 @@ public class InternalUser extends User implements Serializable {
         return manager;
     }
 
-    public void setMenager(User menager) {
+    public void setManager(User menager) {
         this.manager = menager;
     }
 }

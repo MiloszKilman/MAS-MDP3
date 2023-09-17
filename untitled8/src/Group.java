@@ -4,10 +4,12 @@ import java.util.List;
 public class Group {
     protected String Name;
     private List<User> members;
+    private static DatabaseManager databaseManager = new DatabaseManager();
 
     public Group(String name) {
         Name = name;
         members=new ArrayList<>();
+        databaseManager.saveGroup(this);
     }
     public List<User> getMembers() {
         return members;
