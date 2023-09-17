@@ -108,6 +108,7 @@ Po wprowadzeniu podstawowych danych tj. imię, nazwisko, numer telefonu pracowni
 
 9) Diagram iterakcji (sekwencji) dla przypadku użycia utworzenie konta użytkownika gościa
  
+![obraz](https://github.com/MiloszKilman/MAS-MDP3/assets/127020916/0f162b41-de97-4453-9806-f738d7eadbc0)
 
 
 
