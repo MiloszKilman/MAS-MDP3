@@ -1,3 +1,5 @@
+Projekt powstał na potrzeby realizacji przedmiotu Modelowanie i Alnaliza Systemów IT na Polsko Japońskiej Akdademii Komputerowej.
+
 Zarządzanie kontami użytkowników „Active Account Manager”
 1)	Informacje ogólne 
 1.	Dziedzina problemowa 
